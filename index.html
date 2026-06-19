@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Dock</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            height: 100vh;
+            overflow: hidden;
+            background: url('https://i.postimg.cc/xdsKdkCX/IMG-4951.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.15);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Top white bar */
+        .top-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            z-index: 10;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .apple-logo {
+            width: 18px;
+            height: 18px;
+            background: url('https://i.postimg.cc/3rZ30g7h/IMG-4952.png') no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+            margin-right: auto;
+        }
+
+        /* Dock */
+        .dock {
+            position: relative;
+            bottom: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 28px;
+            padding: 8px 20px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            z-index: 2;
+            width: 520px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: absolute;
+            top: 28px;
+            left: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            padding: 6px 0;
+            min-width: 180px;
+            display: none;
+            z-index: 20;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-item {
+            padding: 6px 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0, 122, 255, 0.1);
+        }
+
+        /* About Window */
+        .about-window {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 620px;
+            height: 420px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: none;
+            z-index: 30;
+            font-size: 14px;
+        }
+
+        .window-header {
+            height: 36px;
+            background: #f1f1f1;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            position: relative;
+        }
+
+        .close-btn {
+            width: 12px;
+            height: 12px;
+            background: #ff5f57;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .window-content {
+            display: flex;
+            height: calc(100% - 36px);
+            padding: 40px 40px 40px 60px;
+        }
+
+        .mac-image {
+            width: 220px;
+            height: 220px;
+            background: url('https://i.postimg.cc/bY19xwFw/Untitled2206-20260619015910.png') no-repeat center center;
+            background-size: contain;
+            flex-shrink: 0;
+        }
+
+        .window-text {
+            margin-left: 60px;
+            padding-top: 30px;
+        }
+
+        .window-text h1 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .emulated-text {
+            font-size: 17px;
+            line-height: 1.4;
+        }
+
+        .learn-more {
+            color: #007aff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .learn-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="apple-logo" id="appleBtn"></div>
+    </div>
+
+    <!-- Dropdown -->
+    <div class="dropdown" id="dropdown">
+        <div class="dropdown-item" id="aboutBtn">About This Mac</div>
+    </div>
+
+    <!-- Dock -->
+    <div class="dock"></div>
+
+    <!-- About Window -->
+    <div class="about-window" id="aboutWindow">
+        <div class="window-header">
+            <div class="close-btn" id="closeBtn"></div>
+        </div>
+        <div class="window-content">
+            <div class="mac-image"></div>
+            <div class="window-text">
+                <h1>This device is emulated</h1>
+                <p class="emulated-text">
+                    Learn more about running apps on simulated or physical devices.
+                    <a href="https://developer.apple.com/documentation/xcode/running-your-app-on-simulated-or-physical-devices" 
+                       target="_blank" class="learn-more">Learn more</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const appleBtn = document.getElementById('appleBtn');
+        const dropdown = document.getElementById('dropdown');
+        const aboutBtn = document.getElementById('aboutBtn');
+        const aboutWindow = document.getElementById('aboutWindow');
+        const closeBtn = document.getElementById('closeBtn');
+
+        // Toggle dropdown
+        appleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Show About window
+        aboutBtn.addEventListener('click', () => {
+            dropdown.style.display = 'none';
+            aboutWindow.style.display = 'block';
+        });
+
+        // Close window
+        closeBtn.addEventListener('click', () => {
+            aboutWindow.style.display = 'none';
+        });
+
+        // Close dropdown when clicking elsewhere
+        document.addEventListener('click', () => {
+            dropdown.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
